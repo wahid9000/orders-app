@@ -23,7 +23,7 @@ const App = () => {
     };
     const handleDescending = async () => {
         const res = await axios.get('http://localhost:5000/orders/all-orders-desc');
-        const data = res.data; 
+        const data = res.data;
         setSortedData(data);
     };
     console.log(sortedData);
@@ -59,7 +59,7 @@ const App = () => {
                     <label tabIndex={0} className="btn btn-sm m-1">Sort By Date <AiOutlineDown></AiOutlineDown> </label>
                     <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                         <li className="cursor-pointer" onClick={handleAscending}>Ascending</li>
-                        <li className="cursor-pointer"  onClick={handleDescending}>Descending</li>
+                        <li className="cursor-pointer" onClick={handleDescending}>Descending</li>
                     </ul>
                 </div>
 
@@ -79,7 +79,7 @@ const App = () => {
                     </thead>
                     <tbody>
                         {
-                            dataToRender?.map((order) => (
+                            dataToRender.filter(order => order.customer_name.toLowerCase().includes(searchQuery.toLowerCase()))?.map((order) => (
                                 <tr key={order?._id}>
                                     <th>{order?.order_id}</th>
                                     <td>{order?.customer_name}</td>
