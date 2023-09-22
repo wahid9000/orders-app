@@ -55,10 +55,13 @@ const App = () => {
 
     return (
         <div className="min-h-screen">
-            <OrderStat></OrderStat>
+            <div className="flex items-center justify-between gap-4 px-12 mt-12">
+                <h2 className="text-3xl font-bold">Orders List</h2>
+                <OrderStat allOrders={allOrders}></OrderStat>
+            </div>
             <div className="flex justify-between items-center mt-8 px-12">
                 <div className="flex items-center">
-                    <FaSearch className='absolute left-[5%] top-[61px] text-gray-500'></FaSearch>
+                    <FaSearch className='absolute left-[5%] text-gray-500'></FaSearch>
                     <input
                         name="search"
                         autoComplete="off"
