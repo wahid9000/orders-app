@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import moment from "moment/moment";
 import { useEffect, useState } from "react";
-import { AiOutlineDown } from 'react-icons/ai';
+import Sorting from "./components/Sorting";
 
 const App = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -16,17 +16,6 @@ const App = () => {
             return res.data;
         }
     })
-    const handleAscending = async () => {
-        const res = await axios.get('http://localhost:5000/orders/all-orders-asc');
-        const data = res.data;
-        setSortedData(data);
-    };
-    const handleDescending = async () => {
-        const res = await axios.get('http://localhost:5000/orders/all-orders-desc');
-        const data = res.data;
-        setSortedData(data);
-    };
-    console.log(sortedData);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,13 +44,8 @@ const App = () => {
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search Here..." className="input input-bordered input-accent w-full max-w-xs h-8 mt-1" />
                 </div>
-                <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-sm m-1">Sort By Date <AiOutlineDown></AiOutlineDown> </label>
-                    <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li className="cursor-pointer" onClick={handleAscending}>Ascending</li>
-                        <li className="cursor-pointer" onClick={handleDescending}>Descending</li>
-                    </ul>
-                </div>
+
+                <Sorting setSortedData={setSortedData}></Sorting>
 
             </div>
             <div className="overflow-x-auto mt-4 px-12">
