@@ -42,7 +42,7 @@ const App = () => {
 
 
     const dataToRender = sortedData?.length > 0 ? sortedData : (searchQuery ? searchResults : allOrders);
-    const uniqueProducts = [...new Set(allOrders.map((order) => order.product.product_name))];
+    const uniqueProducts = [...new Set(allOrders?.map((order) => order?.product?.product_name))];
 
     const handleProductCheckboxChange = (event) => {
         const product = event.target.value;
@@ -59,10 +59,10 @@ const App = () => {
         ? dataToRender
         : dataToRender?.filter((order) => selectedStatuses?.includes(order?.order_status));
 
-    const filteredByProductName = selectedProducts.length === 0
+    const filteredByProductName = selectedProducts?.length === 0
         ? filteredData
-        : filteredData.filter((order) =>
-            selectedProducts.includes(order?.product?.product_name)
+        : filteredData?.filter((order) =>
+            selectedProducts?.includes(order?.product?.product_name)
         );
 
 
