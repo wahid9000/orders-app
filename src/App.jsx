@@ -6,7 +6,7 @@ import Sorting from "./components/Sorting";
 import { FaSearch } from 'react-icons/fa';
 import FilterByStatus from "./components/FilterByStatus";
 import OrderStat from "./components/OrderStat";
-import { AiOutlineDown } from "react-icons/ai";
+import FilterByProductName from "./components/FilterByProductName";
 
 const App = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -41,8 +41,6 @@ const App = () => {
     }, [searchQuery]);
 
 
-
-
     const dataToRender = sortedData?.length > 0 ? sortedData : (searchQuery ? searchResults : allOrders);
     const uniqueProducts = [...new Set(allOrders.map((order) => order.product.product_name))];
 
@@ -61,7 +59,7 @@ const App = () => {
         ? dataToRender
         : dataToRender?.filter((order) => selectedStatuses?.includes(order?.order_status));
 
-        const filteredByProductName = selectedProducts.length === 0
+    const filteredByProductName = selectedProducts.length === 0
         ? filteredData
         : filteredData.filter((order) =>
             selectedProducts.includes(order?.product?.product_name)
@@ -104,24 +102,11 @@ const App = () => {
                         setSelectedStatuses={setSelectedStatuses}>
                     </FilterByStatus>
 
-                    <div className=" relative flex items-center">
-                        <div className="dropdown dropdown-end">
-                            <label tabIndex={0} className="btn m-1 btn-primary text-white rounded-none capitalize">Filter By Product Name <AiOutlineDown></AiOutlineDown></label>
-                            <div tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 w-48 mr-1 rounded-none">
-                                {uniqueProducts?.map((product, index) => (
-                                    <label key={index} className="flex gap-1">
-                                        <input
-                                            type="checkbox"
-                                            value={product}
-                                            checked={selectedProducts?.includes(product)}
-                                            onChange={handleProductCheckboxChange}
-                                        />
-                                        {product}
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    <FilterByProductName
+                        uniqueProducts={uniqueProducts}
+                        selectedProducts={selectedProducts}
+                        handleProductCheckboxChange={handleProductCheckboxChange}
+                    ></FilterByProductName>
 
                 </div>
             </div>
