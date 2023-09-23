@@ -6,28 +6,31 @@ import Sorting from "./components/Sorting";
 import { FaSearch } from 'react-icons/fa';
 import FilterByStatus from "./components/FilterByStatus";
 import OrderStat from "./components/OrderStat";
+import { AiOutlineDown } from "react-icons/ai";
 
 const App = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     const [sortedData, setSortedData] = useState([]);
     const [selectedStatuses, setSelectedStatuses] = useState([]);
+    const [selectedProducts, setSelectedProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 10;
 
     const { data: allOrders } = useQuery({
         queryKey: ['all-orders'],
         queryFn: async () => {
-            const res = await axios.get('http://localhost:5000/orders/all-orders');
+            const res = await axios.get('https://orders-app-server.vercel.app/orders/all-orders');
             return res.data;
         }
     })
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:5000/orders/search?search=${searchQuery}`
+                    `https://orders-app-server.vercel.app/orders/search?search=${searchQuery}`
                 );
                 setSearchResults(response.data);
             } catch (error) {
@@ -38,15 +41,37 @@ const App = () => {
     }, [searchQuery]);
 
 
+
+
     const dataToRender = sortedData?.length > 0 ? sortedData : (searchQuery ? searchResults : allOrders);
-    const filteredData = selectedStatuses.length === 0
+    const uniqueProducts = [...new Set(allOrders.map((order) => order.product.product_name))];
+
+    const handleProductCheckboxChange = (event) => {
+        const product = event.target.value;
+        if (event.target.checked) {
+            setSelectedProducts((prevSelected) => [...prevSelected, product]);
+        } else {
+            setSelectedProducts((prevSelected) =>
+                prevSelected.filter((selectedProduct) => selectedProduct !== product)
+            );
+        }
+    };
+
+    const filteredData = selectedStatuses?.length === 0
         ? dataToRender
-        : dataToRender?.filter((order) => selectedStatuses.includes(order.order_status));
+        : dataToRender?.filter((order) => selectedStatuses?.includes(order?.order_status));
+
+        const filteredByProductName = selectedProducts.length === 0
+        ? filteredData
+        : filteredData.filter((order) =>
+            selectedProducts.includes(order?.product?.product_name)
+        );
+
 
     const startIndex = (currentPage - 1) * ordersPerPage;
     const endIndex = startIndex + ordersPerPage;
 
-    const paginatedData = filteredData
+    const paginatedData = filteredByProductName
         ?.filter(
             (order) =>
                 order?.customer_name?.toLowerCase().includes(searchQuery?.toLowerCase())
@@ -56,19 +81,19 @@ const App = () => {
     return (
         <div className="min-h-screen">
             <div className="flex items-center justify-between gap-4 px-12 mt-12">
-                <h2 className="text-3xl font-bold">Orders List</h2>
+                <h2 className="text-4xl text-primary font-bold">Orders List</h2>
                 <OrderStat allOrders={allOrders}></OrderStat>
             </div>
             <div className="flex justify-between items-center mt-8 px-12">
-                <div className="flex items-center">
-                    <FaSearch className='absolute left-[5%] text-gray-500'></FaSearch>
+                <div className=" relative flex items-center">
+                    <FaSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-primary'></FaSearch>
                     <input
                         name="search"
                         autoComplete="off"
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search By..." className="pl-10 placeholder:italic rounded-none shadow-lg input input-bordered w-full max-w-xs" />
+                        placeholder="Search By OrderId, Product Name, Customer Name..." className="pl-9 border-primary placeholder:italic rounded-none shadow-lg input input-bordered w-full max-w-xs" />
                 </div>
 
                 <div className="flex items-center gap-8">
@@ -79,10 +104,29 @@ const App = () => {
                         setSelectedStatuses={setSelectedStatuses}>
                     </FilterByStatus>
 
+                    <div className=" relative flex items-center">
+                        <div className="dropdown dropdown-end">
+                            <label tabIndex={0} className="btn m-1 btn-primary text-white rounded-none capitalize">Filter By Product Name <AiOutlineDown></AiOutlineDown></label>
+                            <div tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 w-48 mr-1 rounded-none">
+                                {uniqueProducts?.map((product, index) => (
+                                    <label key={index} className="flex gap-1">
+                                        <input
+                                            type="checkbox"
+                                            value={product}
+                                            checked={selectedProducts?.includes(product)}
+                                            onChange={handleProductCheckboxChange}
+                                        />
+                                        {product}
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div className="overflow-x-auto mt-4 px-12">
-                <table className="table lg:table-sm table-xs border">
+                <table className="table lg:table-sm table-xs border table-zebra">
                     <thead>
                         <tr>
                             <th>OrderId</th>
@@ -114,14 +158,14 @@ const App = () => {
 
             <div className="join grid grid-cols-2 w-1/6 ml-auto pr-12  mt-5 pagination">
                 <button
-                    className="join-item btn btn-outline"
+                    className="join-item btn btn-warning"
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
                     Previous page
                 </button>
                 <button
-                    className="join-item btn btn-outline"
+                    className="join-item btn btn-primary text-white"
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={endIndex >= filteredData?.length}
                 >

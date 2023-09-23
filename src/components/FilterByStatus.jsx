@@ -4,8 +4,8 @@ const FilterByStatus = ({ selectedStatuses, setSelectedStatuses }) => {
     <div>
       <div className="ml-2">
         <div className="dropdown dropdown-end">
-          <label tabIndex={0} className="btn m-1 rounded-none capitalize">Filter By Order Status <AiOutlineDown></AiOutlineDown></label>
-          <div tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+          <label tabIndex={0} className="btn m-1 btn-primary text-white rounded-none capitalize">Filter By Order Status <AiOutlineDown></AiOutlineDown></label>
+          <div tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 w-48 mr-1 rounded-none">
             <label className="flex gap-1">
               <input
                 type="checkbox"
