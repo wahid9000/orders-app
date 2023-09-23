@@ -17,7 +17,7 @@ const App = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const ordersPerPage = 10;
 
-    const { data: allOrders } = useQuery({
+    const { data: allOrders, isLoading } = useQuery({
         queryKey: ['all-orders'],
         queryFn: async () => {
             const res = await axios.get('https://orders-app-server.vercel.app/orders/all-orders');
@@ -110,53 +110,56 @@ const App = () => {
 
                 </div>
             </div>
-            <div className="overflow-x-auto mt-4 px-12">
-                <table className="table lg:table-sm table-xs border table-zebra">
-                    <thead>
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Customer Name</th>
-                            <th>Product Name</th>
-                            <th>Quantity</th>
-                            <th>Total Amount</th>
-                            <th>Ordered Date</th>
-                            <th>Order Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            paginatedData?.map((order) => (
-                                <tr key={order?._id}>
-                                    <th>{order?.order_id}</th>
-                                    <td>{order?.customer_name}</td>
-                                    <td>{order?.product.product_name}</td>
-                                    <td>{order?.quantity}</td>
-                                    <td>{order?.total_amount}</td>
-                                    <td>{moment(order?.order_date).format('LLL')}</td>
-                                    <td>{order?.order_status}</td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
-            </div>
+            {
+                isLoading ? <div className="text-center mt-20"><span className="loading loading-bars loading-lg text-primary"></span></div> : <div className="overflow-x-auto mt-4 px-12">
+                    <table className="table lg:table-sm table-xs border table-zebra">
+                        <thead>
+                            <tr>
+                                <th>OrderId</th>
+                                <th>Customer Name</th>
+                                <th>Product Name</th>
+                                <th>Quantity</th>
+                                <th>Total Amount</th>
+                                <th>Ordered Date</th>
+                                <th>Order Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                paginatedData?.map((order) => (
+                                    <tr key={order?._id}>
+                                        <th>{order?.order_id}</th>
+                                        <td>{order?.customer_name}</td>
+                                        <td>{order?.product.product_name}</td>
+                                        <td>{order?.quantity}</td>
+                                        <td>{order?.total_amount}</td>
+                                        <td>{moment(order?.order_date).format('LLL')}</td>
+                                        <td>{order?.order_status}</td>
+                                    </tr>
+                                ))
+                            }
+                        </tbody>
+                    </table>
+                    <div className="join grid grid-cols-2 rounded-md w-1/2 md:w-1/4 lg:w-1/6 ml-auto mt-5 pagination">
+                        <button
+                            className="join-item btn btn-warning"
+                            onClick={() => setCurrentPage(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Previous page
+                        </button>
+                        <button
+                            className="join-item btn btn-primary text-white"
+                            onClick={() => setCurrentPage(currentPage + 1)}
+                            disabled={endIndex >= filteredData?.length}
+                        >
+                            Next Page
+                        </button>
+                    </div>
+                </div>
+            }
 
-            <div className="join grid grid-cols-2 w-1/2 md:w-1/4 lg:w-1/6 ml-auto pr-12  mt-5 pagination">
-                <button
-                    className="join-item btn btn-warning"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                >
-                    Previous page
-                </button>
-                <button
-                    className="join-item btn btn-primary text-white"
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={endIndex >= filteredData?.length}
-                >
-                    Next Page
-                </button>
-            </div>
+
         </div>
     );
 };
