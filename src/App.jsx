@@ -78,11 +78,11 @@ const App = () => {
 
     return (
         <div className="min-h-screen">
-            <div className="flex items-center justify-between gap-4 px-12 mt-12">
-                <h2 className="text-4xl text-primary font-bold">Orders List</h2>
+            <div className="md:flex items-center justify-between gap-4 px-12 mt-12">
+                <h2 className="text-4xl text-primary font-bold mb-3">Orders List</h2>
                 <OrderStat allOrders={allOrders}></OrderStat>
             </div>
-            <div className="flex justify-between items-center mt-8 px-12">
+            <div className="md:flex justify-between items-center mt-8 px-12">
                 <div className=" relative flex items-center">
                     <FaSearch className='absolute left-3 top-1/2 transform -translate-y-1/2 text-primary'></FaSearch>
                     <input
@@ -94,7 +94,7 @@ const App = () => {
                         placeholder="Search By OrderId, Product Name, Customer Name..." className="pl-9 border-primary placeholder:italic rounded-none shadow-lg input input-bordered w-full max-w-xs" />
                 </div>
 
-                <div className="flex items-center gap-8">
+                <div className="md:flex items-center gap-8">
                     <Sorting setSortedData={setSortedData}></Sorting>
 
                     <FilterByStatus
@@ -141,7 +141,7 @@ const App = () => {
                 </table>
             </div>
 
-            <div className="join grid grid-cols-2 w-1/6 ml-auto pr-12  mt-5 pagination">
+            <div className="join grid grid-cols-2 w-1/2 md:w-1/4 lg:w-1/6 ml-auto pr-12  mt-5 pagination">
                 <button
                     className="join-item btn btn-warning"
                     onClick={() => setCurrentPage(currentPage - 1)}
